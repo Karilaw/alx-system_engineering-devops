@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-# Display all active IPv4 IPs
+# Get all IP addresses using the hostname command
 
-ip -4 -o addr show scope global | awk '{gsub(/\\/.*/,"",$4); print $4}'
+ip_addresses=$(hostname -I)
+echo "$ip_addresses"
