@@ -1,0 +1,27 @@
+EXPLANATION OF MY SERVER IS WORKING
+A user wants to access a website www.foobar.com . First they enter the url in their web-browser (Chrome, Firefox, Microsoft Edge etc) and hits enter.
+The user’s browser sends a request to Domain Name System(DNS) server to resolve www.foobar.com to an IP address
+The DNS responds with ip address of server that hosts the website which is 8.8.8.8 in this case since foobar.com is configured with www record that points to that address
+The user browser sends request to the server using the ip address obtained from DNS server.
+The server receives the request and processes it using its LAMP stack, which consists of a Linux OS, Apache Web Server, a MySQL database, and python as scripting language.
+The apache web server receives the request and forwards it to the Python application  server, which processes the request by executing the application code and retrieving data from MySQL database if necessary
+The Python application server generates a response, which is sent back to the Apache web server and then forwarded to the user’s web browser
+The user’s web browser receives the response and renders the content, displays the website to the user.
+
+Some Specifics About Infrastructure
+A server is a computer program that provides data or services to the other computers or programs (clients) on a network
+The domain name is used to identify one or more IP addresses and make it easier for users to access websites by using human-redable names instead of numerical IP addresses.
+The www in www.foobar.com is type of DNS record called CNAME(Canonical Name) record, which is used to map one domain name to another(in this case mapping domain name www.foobar.com to foobar.com)
+The Apache web server is responsible for handling incoming HTTP requests from clients and serving web content such as HTML, CSS JavaScript and Images
+The application server is responsible for executing application code and generating dynamic content based on user input and data stored in database
+The database (MySql) is responsible for storing and retrieving data used by the application
+The sever communicates with the user’s computer using the HTTP protocol, which is used to transfer data over the World Wide Web.
+
+Limitations with this Infrascture
+It has a Single Point of Failure (SPOF), meaning that if any component of the infrascture fails then the entire website will fail
+There may be downtime when maintenance is needed, such as when deploying new code or restarting the web server
+It cannot scale if there is too much incoming traffic since there is only one server handling all requests
+
+
+
+
