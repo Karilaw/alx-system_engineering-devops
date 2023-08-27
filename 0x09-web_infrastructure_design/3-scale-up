@@ -1,0 +1,13 @@
+Application Server vs Web Server:
+
+The distinction between application server and web server is important in a typical web application architecture. A web server (Nginx) handles static content, forwards dynamic requests to the application server, and serves as a reverse proxy. The application server runs the actual application code and processes these dynamic requests. Separating these roles improves scalability and maintainability.
+Additional Server for Application:
+
+The requirement specifies adding one more server to host the application server component. This ensures that the web server and application server are running on separate instances, allowing for independent scaling and maintenance of each component.
+Load Balancer Cluster:
+
+The load balancer has been configured in a clustered setup, which adds redundancy and fault tolerance. If one load balancer fails, the other can seamlessly take over, ensuring continuous distribution of traffic and high availability.
+Split Components with Their Own Server:
+
+The architecture adheres to the requirement of having separate servers for the web server, application server, and database. This separation improves security, scalability, and maintainability. It also allows each component to be optimized for its specific role.
+Explanations for the Infrastructure:
