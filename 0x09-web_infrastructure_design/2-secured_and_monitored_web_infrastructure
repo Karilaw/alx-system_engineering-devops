@@ -1,0 +1,20 @@
+ Explanation of how a three server web infrastructure that hosts the website reachable via www.foobar.com would work, with added security, encryption, and monitoring:
+•	A user wants to access the website www.foobar.com, so they enter the URL into their web browser and hit enter.
+•	The user’s web browser sends a request to a Domain Name System (DNS) server to resolve the domain name www.foobar.com into an IP address.
+•	The DNS server responds with the IP address of the load balancer that sits in front of the web servers.
+•	The request passes through a firewall, which filters incoming traffic based on predefined rules to protect the infrastructure from unauthorized access or attacks.
+•	The load balancer receives the request and uses its configured distribution algorithm to forward the request to one of the web servers.
+•	The web server receives the request and forwards it to the application server, which processes the request by executing the application code and retrieving data from the database if necessary.
+•	The application server generates a response, which is sent back to the web server and then forwarded to the load balancer, which sends it back to the user’s web browser through another firewall.
+•	The user’s web browser receives the response and renders the content, displaying the website to the user.
+Now let’s go over some specifics about this infrastructure:
+•	We are adding firewalls to improve security by filtering incoming traffic and protecting the infrastructure from unauthorized access or attacks.
+•	We are using an SSL certificate to serve traffic over HTTPS, which encrypts data in transit between the user’s web browser and the server to protect against interception or tampering.
+•	We are adding monitoring clients to collect data about the performance and health of our infrastructure and send it to a monitoring service such as Sumologic for analysis and alerting.
+•	Monitoring is used to detect issues or failures in our infrastructure and alert us so that we can take action before they impact users.
+•	The monitoring tool collects data by periodically polling various metrics from our servers such as CPU usage, memory usage, disk usage, network traffic, etc., and sending this data to the monitoring service for analysis.
+•	If you want to monitor your web server’s Queries Per Second (QPS), you can configure your monitoring tool to collect this metric from your web server and send it to your monitoring service for analysis.
+There are some issues with this infrastructure:
+•	Terminating SSL at the load balancer level can be an issue because it means that traffic between the load balancer and web servers is not encrypted, which can expose sensitive data if intercepted.
+•	Having only one MySQL server capable of accepting writes is an issue because it creates a Single Point of Failure (SPOF) for write operations. If this server fails, write operations will be unavailable until it is restored or replaced.
+•	Having servers with all the same components (database, web server, and application server) can be a problem because it reduces flexibility and makes it more difficult to scale individual components as needed.
