@@ -1,0 +1,18 @@
+Explanation of how a three-server web Infrastructure that hosts the website reachable via www.foobar.com would work
+•	A user enters a URL into their browser and hits enter
+•	The user’s web browser sends a request to a Domain Name System (DNS) server to resolve the domain name www.foobar.com into an IP address
+•	The DNS server responds with the IP address of the load balancer (HAproxy) that sits in front of the web servers.
+•	The load balancer receives the request and uses its configured distribution algorithm to forward the request to one of the web servers (Nginx)
+•	The web server receives the requests and forwards it to the application server, which processes the request by executing the application server, which processes the request by executing the application code and retrieving data from database if necessary
+•	The application server generates a response, which is sent back to the web server and then forwarded to the load balancer, which sends it back to the user’s web browser
+•	The user’s web browser receives the response and renders the content, displaying the website to the user.
+Some Highlights about this Infrastructure
+•	By having multiple servers, we can handle more incoming traffic and also have redundancy in case one of the servers fails
+•	The load balancer can be configured in either an Active-Active or Active-Passive setup. In an Active-Active setup, all server is actively processing requests, while in an Active-Passive setup, one server is designed as primary server and handles all requests while the other server are on standby in case the primary fails
+•	The load balancer (HAproxy) is responsible for distributing incoming requests across multiple web server (Nginx) using a configured distribution algorithm such as round-robin or least connections. This helps improve performance and availability by ensuring that no single server becomes overloaded with requests.
+•	A database Primary-Replica (Master-slave) cluster consists of one primary (master) node that handles all write operations and one or more replica(slave) nodes that handles all read operations. This helps improve performance by distributing read operations across multiple nodes and also provides redundancy in case the primary node fails
+•	In regard to application, the primary difference between the Primary node and Replica node is that write operations can only be performed on the primary node, while the read operations can be performed on both the primary and replica nodes
+Limitations of the Infrastructure
+•	There may still be Single Points of Failure (SPOF) such as if the load balancer or database primary node fails
+•	There may be security issues since there is no firewall or HTTPS encryption in place
+•	There is no monitoring in place to detect issues or failures
