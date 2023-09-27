@@ -1,28 +1,12 @@
 #!/usr/bin/env bash
-# Update the package list and install Nginx
-sudo apt-get update -y
-sudo apt-get install -y nginx
-
-# Create an HTML file with "Hello World!"
+# Install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+# Make sure nginx is running
+sudo service nginx start
+# Configure nginx to listen to port 80
+sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+# Set up the Hello World page
 echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
-
-# Remove the default Nginx configuration
-sudo rm /etc/nginx/sites-enabled/default
-
-# Create a new Nginx configuration that serves your page
-echo "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /var/www/html;
-    index index.nginx-debian.html;
-    server_name _;
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-}" | sudo tee /etc/nginx/sites-available/default
-
-# Enable the new configuration
-sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Restart Nginx to apply the changes
+# Restart nginx
 sudo service nginx restart
