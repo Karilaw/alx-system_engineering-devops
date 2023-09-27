@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
 # Update the package list and install Nginx
-apt-get update -y
-apt-get install -y nginx
+sudo apt-get update -y
+sudo apt-get install -y nginx
 
 # Create an HTML file with "Hello World!"
-echo "Hello World!" > /var/www/html/index.html
+echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
 
-# Ensure Nginx is running
-service nginx start
+# Remove the default Nginx configuration
+sudo rm /etc/nginx/sites-enabled/default
 
-# Redirect port 80 to localhost to serve content using sysctl
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-sysctl -p /etc/sysctl.conf
+# Create a new Nginx configuration that serves your page
+echo "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.nginx-debian.html;
+    server_name _;
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}" | sudo tee /etc/nginx/sites-available/default
 
+# Enable the new configuration
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Restart Nginx to apply the changes
+sudo service nginx restart
