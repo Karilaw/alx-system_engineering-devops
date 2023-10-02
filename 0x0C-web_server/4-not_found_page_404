@@ -1,37 +1,29 @@
 #!/usr/bin/env bash
+# This script installs Nginx and configures a custom 404 page
 
-# Update the system packages
-sudo apt-get update
+# Update packages and Install Nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 
-# Install Nginx if it's not already installed
-sudo apt-get install -y nginx
+# Remove the default configuration
+sudo rm /etc/nginx/sites-enabled/default
 
-# Create a custom 404 error page with the desired content
-sudo sh -c 'echo "Ceci n'"'"'est pas une page" > /usr/share/nginx/html/custom_404.html'
+# Create a custom 404 page
+echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/custom_404.html
 
-# Create a custom Nginx configuration file for the custom 404 page
-sudo tee /etc/nginx/sites-available/custom_404 <<EOF
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /usr/share/nginx/html;
-    index index.html index.htm;
-
-    server_name 52.3.250.55;
-
+# Create a configuration file for the custom 404 page
+echo "server {
+    listen 80;
+    server_name _;
     error_page 404 /custom_404.html;
     location = /custom_404.html {
+        root /usr/share/nginx/html;
         internal;
     }
-}
-EOF
+}" | sudo tee /etc/nginx/sites-available/custom_404
 
-# Create a symbolic link to enable the custom configuration
+# Enable the configuration by creating a symbolic link
 sudo ln -s /etc/nginx/sites-available/custom_404 /etc/nginx/sites-enabled/
 
-# Test the Nginx configuration
-sudo nginx -t
-
-# Reload Nginx to apply the changes
-sudo systemctl reload nginx
+# Restart Nginx to apply the changes
+sudo service nginx restart
