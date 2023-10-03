@@ -1,21 +1,33 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154
-# Check if nginx is installed
-if ! command -v nginx &> /dev/null
-then
-    # Install nginx
-    sudo apt-get -y update
-    sudo apt-get -y install nginx
-fi
-# Make sure nginx is running
-sudo service nginx start
-# Configure nginx to listen to port 80
-sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
-# Set up the Hello World page
-echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
-# Get the hostname
-HOSTNAME=$(hostname)
-# Add the custom header to all location blocks in the default site configuration
-sudo sed -i "/location /a\        add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-available/default
-# Restart nginx
+# Configure Nginx so that its HTTP response contains a custom header (on web-01 and web-02)
+# Update packages before performing installations
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+# Perform a redirection(301)
+new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/Karilaw;"
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
+
+# Create a 404 custom error page
+echo "Page Not Found" | sudo tee /var/www/html/404.html
+new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
+sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
+
+# Create an HTTP response header
+echo "Creating custom HTTP response header..."
+sudo sed -i "/server_name _/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+
+# Test configurations for syntax errors
+echo "Testing Nginx configuration..."
+sudo nginx -t
+
+# Restart Nginx
+echo "Restarting Nginx..."
 sudo service nginx restart
+
+echo "Done!"
