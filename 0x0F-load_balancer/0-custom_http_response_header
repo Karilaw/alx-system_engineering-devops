@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 # Check if nginx is installed
 if ! command -v nginx &> /dev/null
 then
@@ -14,9 +15,7 @@ sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-availabl
 echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
 # Get the hostname
 HOSTNAME=$(hostname)
-# Create a configuration snippet to add the custom header
-echo "add_header X-Served-By $HOSTNAME;" | sudo tee /etc/nginx/snippets/custom_http_response_header.conf
-# Include the configuration snippet in the default configuration
-sudo sed -i '/server_name _;/a\    include snippets/custom_http_response_header.conf;' /etc/nginx/sites-available/default
+# Add the custom header to all location blocks in the default site configuration
+sudo sed -i "/location /a\        add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-available/default
 # Restart nginx
 sudo service nginx restart
