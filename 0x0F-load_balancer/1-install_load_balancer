@@ -36,8 +36,9 @@ frontend http_front
 
 backend http_back
    balance roundrobin
-   server web-01 [STUDENT_ID]-web-01:80 check
-   server web-02 [STUDENT_ID]-web-02:80 check
+   server web-01 52.3.250.55:80 check
+   server web-02 54.89.107.230:80 check
+
 EOF
 
 # Restart HAproxy to apply the changes
