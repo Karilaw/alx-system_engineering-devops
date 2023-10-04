@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script ensures Nginx is running and listening on port 80
+service nginx start
+echo "listen 80;" > /etc/nginx/sites-available/default
+service nginx restart
