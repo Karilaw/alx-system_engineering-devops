@@ -1,15 +1,3 @@
-#!/usr/bin/env bash
-# Bash script that configures a new Ubuntu machine to respect above requirements
-
-# Update the list of available packages and install HAProxy
-sudo apt-get update -y
-sudo apt-get install haproxy -y
-
-# Enable HAProxy to be started by the init script
-sudo systemctl enable haproxy
-
-# Define the configuration for HAProxy
-cat << EOF | sudo tee /etc/haproxy/haproxy.cfg
 global
     log /dev/log    local0
     log /dev/log    local1 notice
@@ -18,6 +6,7 @@ global
     stats timeout 30s
     user haproxy
     group haproxy
+    tune.ssl.default-dh-param 2048
     daemon
 
 defaults
@@ -25,23 +14,23 @@ defaults
     mode    http
     option  httplog
     option  dontlognull
+    option forwardfor
     timeout connect 5000
     timeout client  50000
     timeout server  50000
 
-frontend http_front
-   bind *:80
-   stats uri /haproxy?stats
-   default_backend http_back
+frontend www-http
+    bind *:80
+    http-request add-header X-Forwarded-Proto http
+    default_backend www-backend
 
-backend http_back
+frontend www-https
+   bind *:443 ssl crt /etc/letsencrypt/live/www.passokinginc.tech/www.passokinginc.tech.pem
+   reqadd X-Forwarded-Proto:\ https
+   default_backend www-backend
+
+backend www-backend
    balance roundrobin
+   redirect scheme https if !{ ssl_fc }
    server 335479-web-01 52.3.250.55:80 check
    server 335479-web-02 54.89.107.230:80 check
-
-EOF
-
-# Restart HAProxy to apply the changes
-sudo systemctl restart haproxy
-
-echo "HAProxy configured with new settings"
