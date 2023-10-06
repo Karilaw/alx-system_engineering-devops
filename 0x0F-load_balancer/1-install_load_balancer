@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
-# This script installs HAproxy and configures it to distribute requests to web-01 and web-02 using a roundrobin algorithm.
+#!/bin/bash
+# Bash script that configures a new Ubuntu machine to respect above requirements
 
-# Update packages and Install HAproxy
-sudo apt-get update
-sudo apt-get install -y haproxy
+# Update the list of available packages and install HAProxy
+sudo apt-get update -y
+sudo apt-get install haproxy -y
 
-# Enable HAproxy to be managed via an init script
+# Enable HAProxy to be started by the init script
 sudo systemctl enable haproxy
 
-# Configure HAproxy
+# Define the configuration for HAProxy
 cat << EOF | sudo tee /etc/haproxy/haproxy.cfg
 global
     log /dev/log    local0
@@ -36,10 +36,12 @@ frontend http_front
 
 backend http_back
    balance roundrobin
-   server web-01 52.3.250.55:80 check
-   server web-02 54.89.107.230:80 check
+   server web-01 335479-web-01:80 check
+   server web-02 335479-web-02:80 check
 
 EOF
 
-# Restart HAproxy to apply the changes
+# Restart HAProxy to apply the changes
 sudo systemctl restart haproxy
+
+echo "HAProxy configured with new settings"
