@@ -1,3 +1,15 @@
+#!/usr/bin/env bash
+# This script installs HAproxy and configures it to distribute requests to web-01 and web-02 using a roundrobin algorithm.
+
+# Update packages and Install HAproxy
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+# Enable HAproxy to be managed via an init script
+sudo systemctl enable haproxy
+
+# Configure HAproxy
+cat << EOF | sudo tee /etc/haproxy/haproxy.cfg
 global
     log /dev/log    local0
     log /dev/log    local1 notice
@@ -6,7 +18,6 @@ global
     stats timeout 30s
     user haproxy
     group haproxy
-    tune.ssl.default-dh-param 2048
     daemon
 
 defaults
@@ -14,23 +25,20 @@ defaults
     mode    http
     option  httplog
     option  dontlognull
-    option forwardfor
     timeout connect 5000
     timeout client  50000
     timeout server  50000
 
-frontend www-http
-    bind *:80
-    http-request add-header X-Forwarded-Proto http
-    default_backend www-backend
+frontend http_front
+   bind *:80
+   stats uri /haproxy?stats
+   default_backend http_back
 
-frontend www-https
-   bind *:443 ssl crt /etc/letsencrypt/live/www.passokinginc.tech/www.passokinginc.tech.pem
-   reqadd X-Forwarded-Proto:\ https
-   default_backend www-backend
-
-backend www-backend
+backend http_back
    balance roundrobin
-   redirect scheme https if !{ ssl_fc }
    server 335479-web-01 52.3.250.55:80 check
    server 335479-web-02 54.89.107.230:80 check
+EOF
+
+# Restart HAproxy to apply the changes
+sudo systemctl restart haproxy
