@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Bash script that configures a new Ubuntu machine to respect above requirements
 
 # Update the list of available packages and install HAProxy
