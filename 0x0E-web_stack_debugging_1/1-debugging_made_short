@@ -3,6 +3,6 @@
 # configure Nginx to use port 80
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 # restart Nginx
-service Nginx restart
+service nginx restart
 #Kill nginx process
 kill "$(pgrep 'nginx' | head -1)"
