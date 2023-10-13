@@ -1,0 +1,37 @@
+	# Understanding Web Browsing: What Happens When You Visit a Website
+
+When you type `https://www.google.com` into your browser and press Enter, a series of complex and fascinating processes occur behind the scenes. Let's break it down:
+
+## DNS Request
+
+The first step is a **Domain Name System (DNS) request**. The browser needs to know the IP address associated with `www.google.com`. It asks a DNS server, which returns the IP address.
+
+## TCP/IP
+
+Next, the browser initiates a **TCP/IP connection** with the server at the returned IP address. TCP/IP is the fundamental protocol that powers the internet, enabling reliable, ordered delivery of data packets.
+
+## Firewall
+
+Your computer's **firewall** checks this connection request against its rules. If it's allowed, the request proceeds; if not, the request is blocked.
+
+## HTTPS/SSL
+
+The `https://` in the URL indicates that **HTTPS (HTTP Secure)** is used, which means data sent between your browser and the server is encrypted using **SSL (Secure Sockets Layer)** or its successor, TLS (Transport Layer Security).
+
+## Load Balancer
+
+Once your request reaches Google's network, it encounters a **load balancer**. This distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with requests.
+
+## Web Server
+
+The load balancer forwards your request to one of Google's **web servers**, which parses the request and determines what information needs to be sent back to your browser.
+
+## Application Server
+
+In some cases, the web server might need to communicate with an **application server**. This server runs software that generates the requested data dynamically.
+
+## Database
+
+The application server might also need to retrieve information from a **database**. For example, if you're logged into your Google account, it might fetch personalized information from a database.
+
+Once all these steps are complete, the web server sends an HTTP response back to your browser with the requested webpage data (usually in HTML format), which your browser then renders and displays.

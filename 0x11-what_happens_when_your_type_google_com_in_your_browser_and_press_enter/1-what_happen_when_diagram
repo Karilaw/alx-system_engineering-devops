@@ -1,0 +1,41 @@
+
+Browser
+www.google.com
+DNS Server
+IP Adress
+32.23.34.23
+
+
+
+Firewall
+
+Request to port 443
+SSL encrypted traffic
+
+Load Balancer
+
+Request to Server (Port 443)
+server 1
+
+server 2
+
+server 3
+
+server 4
+
+server 5
+
+.............................
+
+server 5
+
+server 6
+
+
+
+
+
+
+web server
+Application Server
+Database
