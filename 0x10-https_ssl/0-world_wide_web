@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# This script fetches DNS information for subdomains
+# Function to get record information
+get_record_info() {
+    local domain=$1
+    local subdomain=$2
+
+    record_info=$(dig $subdomain.$domain | awk -v subdomain="$subdomain" '/ANSWER SECTION/,0' | awk -v subdomain="$subdomain" 'NR==2 {print "The subdomain "subdomain" is a " substr($4, 0, length($4)-1) " record and points to " $5}')
+    echo "$record_info"
+}
+
+# Main
+domain=$1
+subdomain=$2
+
+if [[ -z "$subdomain" ]]; then
+    # If no subdomain is provided, display info for www, lb-01, web-01 and web-02
+    for sub in www lb-01 web-01 web-02; do
+        get_record_info $domain $sub
+    done
+else
+    # If subdomain is provided, display info for the specific subdomain
+    get_record_info $domain $subdomain
+fi

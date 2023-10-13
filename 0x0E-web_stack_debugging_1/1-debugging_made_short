@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
-# This script ensures Nginx is running and listening on port 80
-service nginx start
-echo "listen 80;" > /etc/nginx/sites-available/default
-service nginx restart
+# This script checks if Nginx is running and configures it to listen on port 80 if not.
+
+# Check if Nginx is running
+if ! systemctl is-active --quiet nginx; then
+    # Remove the default Nginx configuration
+    rm /etc/nginx/sites-enabled/default
+    
+    # Create a symbolic link to configure Nginx to use port 80
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    
+    # Restart Nginx
+    systemctl restart nginx
+fi

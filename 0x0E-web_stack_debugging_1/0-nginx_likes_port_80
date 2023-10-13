@@ -1,28 +1,8 @@
 #!/usr/bin/env bash
 # This script checks if Nginx is running and listening on port 80, and configures it if necessary
-
-# Check if Nginx is running
-if ! service nginx status > /dev/null
-then
-    # If Nginx is not running, start it
-    service nginx start
-fi
-
-# Check if port 80 is being used
-if ! netstat -plntu | grep ':80 ' > /dev/null
-then
-    # If port 80 is not being used, create a new default server block that listens on port 80
-    echo "server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-        root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name _;
-        location / {
-            try_files \$uri \$uri/ =404;
-        }
-    }" > /etc/nginx/sites-available/default
-    
-    # Reload Nginx to apply the changes
-    service nginx reload
-fi
+#remove the default Nginx configuration
+rm /etc/nginx/sites-enabled/default
+# configure Nginx to use port 80
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+# restart Nginx
+service nginx restart
