@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+# a script that redirects incomming traffic to port 80
+# First, install ufw if it's not already installed
+sudo apt-get install ufw
+
+# Deny all incoming traffic by default
+sudo ufw default deny incoming
+
+# Allow outgoing traffic by default
+sudo ufw default allow outgoing
+
+# Allow incoming traffic on ports 22 (SSH), 443 (HTTPS/SSL), and 80 (HTTP)
+sudo ufw allow 22/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 80/tcp
+
+# Enable the firewall
+sudo ufw enable
+
+# Add a rule to forward traffic from port 8080 to port 80
+sudo iptables -t nat -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
