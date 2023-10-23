@@ -4,49 +4,52 @@ import requests
 import sys
 
 
-def get_employee_todo_progress(employee_id):
+def fetch_employee_todo_list(employee_id):
     """
-    Given an employee ID, fetches the employee's TODO list progress
-    from a REST API and prints it in a specific format.
+    Fetch and display an employee's TODO list progress from the API.
 
     Args:
-        employee_id (int): The ID of the employee.
+        employee_id (str): The ID of the employee.
 
     Returns:
         None
     """
-    base_url = "https://jsonplaceholder.typicode.com/users/"
-    user_url = "{}{}".format(base_url, employee_id)
-    todos_url = "{}/{}/todos".format(base_url, employee_id)
+    base_url = "https://jsonplaceholder.typicode.com"
+    user_url = f"{base_url}/users/{employee_id}"
+    todos_url = f"{base_url}/todos?userId={employee_id}"
 
-    user_response = requests.get(user_url)
-    todos_response = requests.get(todos_url)
+    try:
+        user_response = requests.get(user_url)
+        todos_response = requests.get(todos_url)
 
-    if user_response.status_code != 200:
-        print('Error: Could not retrieve user information')
-        sys.exit(1)
+        if not (user_response.ok and todos_response.ok):
+            print("Error: Unable to fetch data from the API.")
+            return
 
-    if todos_response.status_code != 200:
-        print('Error: Could not retrieve todos')
-        sys.exit(1)
+        user_data = user_response.json()
+        todos_data = todos_response.json()
 
-    user_data = user_response.json()
-    todos_data = todos_response.json()
+        employee_name = user_data["name"]
+        completed_tasks = [task for task in todos_data if task["completed"]]
+        total_tasks = len(todos_data)
 
-    total_tasks = len(todos_data)
-    done_tasks = [task for task in todos_data if task.get('completed')]
+        progress_message = (
+            f"Employee {employee_name} is done with tasks "
+            f"({len(completed_tasks)}/{total_tasks}):"
+        )
+        print(progress_message)
 
-    print("Employee {} is done with tasks({}/{}):".format(
-        user_data.get('name'), len(done_tasks), total_tasks))
+        for task in completed_tasks:
+            print(f"    {task['title']}")
 
-    for task in done_tasks:
-        print("\t {}".format(task.get('title')))
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print('Usage: {} <employee_id>'.format(sys.argv[0]))
+    if len(sys.argv) != 2:
+        print("Usage: python3 script.py <employee_id>")
         sys.exit(1)
 
     employee_id = sys.argv[1]
-    get_employee_todo_progress(employee_id)
+    fetch_employee_todo_list(employee_id)
