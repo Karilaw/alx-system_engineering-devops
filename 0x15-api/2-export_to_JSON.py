@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ Export to JSON """
+import json
 import requests
 import sys
-import json
 
 
 def fetch_employee_todo_list(employee_id):
