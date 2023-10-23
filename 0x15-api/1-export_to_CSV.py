@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """ Export to CSV """
+import csv
 import requests
 import sys
-import csv
+
 
 def fetch_employee_todo_list(employee_id):
     """
@@ -55,6 +56,7 @@ def fetch_employee_todo_list(employee_id):
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
