@@ -2,6 +2,7 @@
 """ Top Ten """
 import requests
 
+
 def top_ten(subreddit):
     """
     Query the Reddit API for the titles
